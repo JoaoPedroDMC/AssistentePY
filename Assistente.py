@@ -2,7 +2,7 @@
 #Biblioteca:#
 import os
 from gtts import gTTS
-import google.generativeai as genai
+import openai
 
 #Variáveis:#
 NDU = ""  # Nome do usuário
@@ -18,9 +18,12 @@ RIA = ""  # Resposta para IA
 def PPIA(PIA):  # função pergunta para IA
     global RIA
     try:
-        genai.configure(api_key="SUA_CHAVE_DE_API")
-        response = genai.generate_text(TPD + PIA)
-        RIA = response['candidates'][0]['text'] if response else "Desculpe, não consegui entender sua pergunta."
+        openai.api_key = "SUA_CHAVE_DE_API"  # Substitua pela sua chave de API do OpenAI
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",  # Modelo do ChatGPT
+            messages=[{"role": "user", "content": TPD + PIA}]
+        )
+        RIA = response['choices'][0]['message']['content'] if response else "Desculpe, não consegui entender sua pergunta."
         print(f"{NDA}: {RIA}")
     except Exception as e:
         print(f"Erro ao se comunicar com a IA: {e}")
